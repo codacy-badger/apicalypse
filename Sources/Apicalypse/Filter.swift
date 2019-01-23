@@ -72,7 +72,7 @@ public struct Filter: CustomStringConvertible {
     ///   - property: The entity property that should match `value`
     ///   - operator: The operator to test `property` against value, e.g. "=", "!=", ">", ...
     ///   - value: The value to match against `property`
-    internal init(property: CodingKey, operator: Operator, value: String?) {
+    public init(property: CodingKey, operator: Operator, value: String?) {
         self.init(property: property.stringValue, operator: `operator`, value: value)
     }
 
