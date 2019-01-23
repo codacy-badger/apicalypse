@@ -17,7 +17,7 @@ public struct Filter<Entity> where Entity: Composable {
     /// The coding key path to the property
     internal let codingPath: [CodingKey]
 
-    /// The given operator, e.g. "=", "!=", ">", ... 
+    /// The given operator, e.g. "=", "!=", ">", ...
     internal let operation: Operator
 
     /// The matching value
@@ -36,10 +36,18 @@ public struct Filter<Entity> where Entity: Composable {
     }
 
     /// <# Description #>
-    public init<Value>(field keyPath: KeyPath<Entity, Value>, comparison: Operator, value: Value?)
+    public init<Value>(field keyPath: KeyPath<Entity, Value>, comparison: Operator, value: Value)
         throws where Value: LosslessStringConvertible {
+            let rhs = String(describing: value)
             let field = keyPath as PartialKeyPath<Entity>
-            let rhs = value.map(String.init(describing:))
+            try self.init(field: field, comparison: comparison, value: rhs)
+    }
+
+    /// <# Description #>
+    public init<Value>(field keyPath: KeyPath<Entity, Value?>, comparison: Operator, value: Value)
+        throws where Value: LosslessStringConvertible {
+            let rhs = String(describing: value)
+            let field = keyPath as PartialKeyPath<Entity>
             try self.init(field: field, comparison: comparison, value: rhs)
     }
 
@@ -55,13 +63,25 @@ public struct Filter<Entity> where Entity: Composable {
 // MARK: - Global Filter
 
 /// = Equal: Exact match equal. Examples: `try \.identifier == 4`, `try \.parentGame == nil`
-public func ==<Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value?)
+public func ==<Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value)
+    throws -> Filter<Entity> where Entity: Composable, Value: LosslessStringConvertible {
+        return try Filter(field: lhs, comparison: EquatableOperator.equal, value: rhs)
+}
+
+/// = Equal: Exact match equal. Examples: `try \.identifier == 4`, `try \.parentGame == nil`
+public func ==<Entity, Value>(lhs: KeyPath<Entity, Value?>, rhs: Value)
     throws -> Filter<Entity> where Entity: Composable, Value: LosslessStringConvertible {
         return try Filter(field: lhs, comparison: EquatableOperator.equal, value: rhs)
 }
 
 /// != Not Equal: Exact match equal. Examples: `try \.identifier != 4`, `try \.parentGame != nil`
-public func !=<Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value?)
+public func !=<Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value)
+    throws -> Filter<Entity> where Entity: Composable, Value: LosslessStringConvertible {
+        return try Filter(field: lhs, comparison: EquatableOperator.notEqual, value: rhs)
+}
+
+/// != Not Equal: Exact match equal. Examples: `try \.identifier != 4`, `try \.parentGame != nil`
+public func !=<Entity, Value>(lhs: KeyPath<Entity, Value?>, rhs: Value)
     throws -> Filter<Entity> where Entity: Composable, Value: LosslessStringConvertible {
         return try Filter(field: lhs, comparison: EquatableOperator.notEqual, value: rhs)
 }
@@ -94,12 +114,12 @@ public func <=<Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value)
 
 // MARK: - String Filter
 
-infix operator =^*: MultiplicationPrecedence /// = "string"*
-infix operator =*&: MultiplicationPrecedence /// = *"string"
-infix operator =^*&: MultiplicationPrecedence /// = *"string"*
-infix operator ~^*: MultiplicationPrecedence /// ~ "string"*
-infix operator ~*&: MultiplicationPrecedence /// ~ *"string"
-infix operator ~^*&: MultiplicationPrecedence /// ~ *"string"*
+infix operator =^*: MultiplicationPrecedence /// = string*
+infix operator =*&: MultiplicationPrecedence /// = *string
+infix operator =^*&: MultiplicationPrecedence /// = *string*
+infix operator ~^*: MultiplicationPrecedence /// ~ string*
+infix operator ~*&: MultiplicationPrecedence /// ~ *string
+infix operator ~^*&: MultiplicationPrecedence /// ~ *string*
 
 /// = "Your input string"* Prefix: Exact match on the beginning of the string, can end with anything. (Case sensitive).
 public func =^*<Entity>(lhs: KeyPath<Entity, String>, rhs: String) throws -> Filter<Entity> where Entity: Composable {
