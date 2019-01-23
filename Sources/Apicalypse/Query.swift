@@ -52,13 +52,14 @@ extension Query {
     // MARK: Includes
 
     /// Example: `.include(field: \.platform)`
-    public func include(field: PartialKeyPath<Entity>) throws -> Query {
+    public func include<Value>(field: KeyPath<Entity, Value>) throws -> Query {
         return try include(subField: field) // Does forward, but actually calls `Self.Entity`
     }
 
     /// Example: `.include(subField: \Logo.imageId)`
-    public func include<SubEntity>(subField: PartialKeyPath<SubEntity>) throws -> Query where SubEntity: Composable {
-        return try include(field: rawCodingPath(for: Entity.codingPath(for: subField)))
+    public func include<SubEntity, Value>(subField: KeyPath<SubEntity, Value>)
+        throws -> Query where SubEntity: Composable {
+            return try include(field: rawCodingPath(for: Entity.codingPath(for: subField)))
     }
 
     /// Example: `.include(field: "platform")`
