@@ -7,6 +7,22 @@ import Foundation
 /// IGDB Example:
 ///
 ///     Address: https://api-v3.igdb.com/games/
-///     Body: search "zelda";
+///     Body: include *; search "zelda";
 ///
-public protocol Searchable {}
+public protocol Searchable: Composable {}
+
+extension Query where Entity: Searchable {
+
+    /// IGDB Examples:
+    ///
+    /// - Character `.search(for: "Master Chief")`
+    /// - Collection: `.search(for: "Halo")`
+    /// - Game: `.search(for: "Combat Evolved")`
+    /// - Platform: `.search(for: "Xbox")`
+    /// - Theme: `.search(for: "Survival")`
+    public func search(for value: String) -> Query {
+        var query = self
+        query.search = value
+        return query
+    }
+}

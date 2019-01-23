@@ -5,9 +5,17 @@ import Foundation
 /// It defines the inverse path from a keyPath to the CodingKey path.
 public protocol Composable {
 
-    /// Returns the path of coding keys it takes to get to given `keyPath`
+    /// Returns the coding key of given `keyPath`
     ///
     /// - Parameter keyPath: The `keyPath` to look up
-    /// - Returns: The coding keys, or path, it takes to get to given `keyPath`
-    static func codingPath(for keyPath: AnyKeyPath) throws -> [CodingKey]
+    /// - Returns: The coding keys of given `keyPath`
+    static func codingPath(for keyPath: PartialKeyPath<Self>) throws -> CodingKey
+}
+
+extension Array where Element == String {
+
+    /// Wildcard include to all fields in a `Composable`
+    public static var allFields: [String] {
+        return ["*"]
+    }
 }

@@ -4,25 +4,25 @@ import Foundation
 public struct Query<Entity> where Entity: Composable {
 
     /// The fields to include on the requested entities
-    private var includes: [String]
+    public var includes: [String]
 
     /// The fields to exclude on the requested entities
-    private var excludes: [String]
+    public var excludes: [String]
 
-    /// The filter parameters to attach to the query
-    private var filters: [String]
+    /// The filter parameter(s) to attach to the query
+    public var filter: Filter?
 
     /// The sort parameter to attach to the query
-    private var sort: String?
+    public var sort: String?
 
     /// The search parameter to attach to the query
-    private var search: String?
+    public var search: String?
 
     /// The limit parameter to attach to the query
-    private var limit: Int?
+    public var limit: Int?
 
     /// The offset parameter to attach to the query
-    private var offset: Int?
+    public var offset: Int?
 
     /// Designated initializer.
     ///
@@ -33,17 +33,6 @@ public struct Query<Entity> where Entity: Composable {
     public init(entity: Entity.Type = Entity.self) {
         includes = []
         excludes = []
-        filters = []
-    }
-}
-
-// MARK: - Fields
-
-extension Array where Element == String {
-
-    /// Include all fields in an entity request
-    public static var allFields: [String] {
-        return ["*"]
     }
 }
 
@@ -51,36 +40,23 @@ extension Query {
 
     // MARK: Includes
 
-    /// Example: `.include(field: \.platform)`
-    public func include<Value>(field: KeyPath<Entity, Value>) throws -> Query {
-        return try include(subField: field) // Does forward, but actually calls `Self.Entity`
+    /// Example: `.include(\.platform)`
+    public func include<Value>(_ field: KeyPath<Entity, Value>) throws -> Query {
+        return try include(contentsOf: [field])
     }
 
-    /// Example: `.include(subField: \Logo.imageId)`
-    public func include<SubEntity, Value>(subField: KeyPath<SubEntity, Value>)
-        throws -> Query where SubEntity: Composable {
-            return try include(field: rawCodingPath(for: Entity.codingPath(for: subField)))
+    /// Example: `.include("platform")`
+    public func include(_ field: String) -> Query {
+        return include(contentsOf: [field])
     }
 
-    /// Example: `.include(field: "platform")`
-    public func include(field: String) -> Query {
-        var query = self
-        query.includes.append(field)
-        return query
+    /// Example: `.include(contentsOf: [\.name, \.platform])`
+    public func include(contentsOf fields: [PartialKeyPath<Entity>]) throws -> Query {
+        return include(contentsOf: try fields.map({ try Entity.codingPath(for: $0).stringValue }))
     }
 
-    /// Example: `.include(field: [\.name, \.platform])`
-    public func include(fields: [PartialKeyPath<Entity>]) throws -> Query {
-        return try include(subFields: fields) // Does forward, but actually calls `Self.Entity`
-    }
-
-    /// Example: `.include(fields: [\Artwork.width, \Artwork.imageId])`
-    public func include<SubEntity>(subFields: [PartialKeyPath<SubEntity>]) throws -> Query where SubEntity: Composable {
-        return try include(fields: subFields.map(Entity.codingPath(for:)).map(rawCodingPath))
-    }
-
-    /// Example: `.include(fields: ["name", "platform"])`
-    public func include(fields: [String]) -> Query {
+    /// Example: `.include(contentsOf: ["name", "platform"])`
+    public func include(contentsOf fields: [String]) -> Query {
         var query = self
         query.includes.append(contentsOf: fields)
         return query
@@ -88,35 +64,23 @@ extension Query {
 
     // MARK: Exclude
 
-    /// Example: `.exclude(field: \.platform)`
-    public func exclude(field: PartialKeyPath<Entity>) throws -> Query {
-        return try exclude(subField: field) // Does forward, but actually calls `Self.Entity`
+    /// Example: `.exclude(\.platform)`
+    public func exclude<Value>(_ field: KeyPath<Entity, Value>) throws -> Query {
+        return try exclude(contentsOf: [field])
     }
 
-    /// Example: `.exclude(subField: \Cover.imageId)`
-    public func exclude<SubEntity>(subField: PartialKeyPath<SubEntity>) throws -> Query where SubEntity: Composable {
-        return try exclude(field: rawCodingPath(for: Entity.codingPath(for: subField)))
+    /// Example: `.exclude("platform")`
+    public func exclude(_ field: String) -> Query {
+        return exclude(contentsOf: [field])
     }
 
-    /// Example: `.exclude(field: "platform")`
-    public func exclude(field: String) -> Query {
-        var query = self
-        query.excludes.append(field)
-        return query
+    /// Example: `.exclude(contentsOf: [\.name, \.platform])`
+    public func exclude(contentsOf fields: [PartialKeyPath<Entity>]) throws -> Query {
+        return exclude(contentsOf: try fields.map({ try Entity.codingPath(for: $0).stringValue }))
     }
 
-    /// Example: `.exclude(fields: [\.name, \.platform])`
-    public func exclude(fields: [PartialKeyPath<Entity>]) throws -> Query {
-        return try exclude(subFields: fields) // Does forward, but actually calls `Self.Entity`
-    }
-
-    /// Example: `.exclude(subFields: [\Artwork.width, \Artwork.imageId])`
-    public func exclude<SubEntity>(subFields: [PartialKeyPath<SubEntity>]) throws -> Query where SubEntity: Composable {
-        return try exclude(fields: subFields.map(Entity.codingPath(for:)).map(rawCodingPath))
-    }
-
-    /// Example: `.exclude(fields: ["name", "platform"])`
-    public func exclude(fields: [String]) -> Query {
+    /// Example: `.exclude(contentsOf: ["name", "platform"])`
+    public func exclude(contentsOf fields: [String]) -> Query {
         var query = self
         query.excludes.append(contentsOf: fields)
         return query
@@ -125,8 +89,8 @@ extension Query {
     // MARK: Sort
 
     /// Example: `.sort(by: \.rating, order: .descending)`. Order defaults to `.descending`.
-    public func sort(by field: PartialKeyPath<Entity>, order: Order = .descending) throws -> Query {
-        return try sort(by: rawCodingPath(for: Entity.codingPath(for: field)), order: order)
+    public func sort<Value>(by field: KeyPath<Entity, Value>, order: Order = .descending) throws -> Query {
+        return try sort(by: Entity.codingPath(for: field).stringValue, order: order)
     }
 
     /// Example: `.sort(by: "rating", order: .descending)`. Order defaults to `.descending`.
@@ -138,17 +102,10 @@ extension Query {
 
     // MARK: Filter
 
-    /// Example: `.where(\.platform == 48))`, `.where(\.identifier != [3, 6, 19])`
-    public func `where`(_ filter: Filter<Entity>) -> Query {
-        let property = rawCodingPath(for: filter.codingPath)
-        let value = filter.operation.prepare(value: filter.value)
-        return `where`("\(property) \(filter.operation) \(value)")
-    }
-
-    /// Example: `.where("platform = 48"))`, `.where("identifier != [3, 6, 19]")`
-    public func `where`(_ filter: String) -> Query {
+    /// Example: `.where(\.platform == 48))`, `.where(\.identifier != [3, 6, 19])` - last one wins
+    public func `where`(_ filter: Filter) -> Query {
         var query = self
-        query.filters.append(filter)
+        query.filter = filter
         return query
     }
 
@@ -167,32 +124,6 @@ extension Query {
     public func offset(by value: Int) -> Query {
         var query = self
         query.offset = value
-        return query
-    }
-
-    // MARK: Helper
-
-    /// Returns the raw coding path to given `codingPath`. For example: "game", "game.title", ...
-    ///
-    /// - Parameter codingPath: The `codingPath` to look up
-    /// - Returns: The raw coding key path it takes to get to given `codingPath`
-    private func rawCodingPath(for codingPath: [CodingKey]) -> String {
-        return codingPath.map({ $0.stringValue }).joined(separator: ".")
-    }
-}
-
-extension Query where Entity: Searchable {
-
-    /// IGDB Examples:
-    ///
-    /// - Character `.search(for: "Master Chief")`
-    /// - Collection: `.search(for: "Halo")`
-    /// - Game: `.search(for: "Combat Evolved")`
-    /// - Platform: `.search(for: "Xbox")`
-    /// - Theme: `.search(for: "Survival")`
-    public func search(for value: String) -> Query {
-        var query = self
-        query.search = value
         return query
     }
 }
@@ -215,9 +146,8 @@ extension Query {
         if let sort = self.sort { // sort release_dates.date desc;
             queries.append("sort \(sort);")
         }
-        if !filters.isEmpty { // where rating >= 80 & release_dates.date > 631152000;
-            let value = filters.joined(separator: "&")
-            queries.append("where \(value);")
+        if let filter = self.filter { // where rating >= 80 & release_dates.date > 631152000;
+            queries.append("where \(filter);")
         }
         if let limit = self.limit { // limit 33;
             let field = "limit \(String(limit));"

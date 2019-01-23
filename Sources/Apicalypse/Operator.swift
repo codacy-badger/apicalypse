@@ -1,5 +1,7 @@
 import Foundation
 
+// TODO: Not documented, because ugly and needs reword
+
 /// <# Description #>
 public protocol Operator {
 
@@ -14,6 +16,22 @@ public protocol Operator {
 public enum EquatableOperator: String, Operator {
     case equal = "="
     case notEqual = "!="
+
+    /// The operator sign of this comparison
+    public var operation: String {
+        return rawValue
+    }
+
+    /// <# Description #>
+    public func prepare(value: String) -> String {
+        return value // Nothing to compare on single value operations
+    }
+}
+
+/// <# Description #>
+public enum JoiningOperator: String, Operator {
+    case and = "&"
+    case or = "|"
 
     /// The operator sign of this comparison
     public var operation: String {
@@ -45,34 +63,18 @@ public enum ComparisonOperator: String, Operator {
 }
 
 /// <# Description #>
-public enum StringOperator: Operator {
-
-    /// <# Description #>
-    public enum CaseComparisonMode: String {
-        case caseSensitive = "="
-        case caseInsensitive = "~"
-    }
-
-    case startsWith(CaseComparisonMode)
-    case endsWith(CaseComparisonMode)
-    case contains(CaseComparisonMode)
+public enum StringComparisonMode: String, Operator {
+    case caseSensitive = "="
+    case caseInsensitive = "~"
 
     /// The operator sign of this comparison
     public var operation: String {
-        switch self {
-        case let .startsWith(mode): return mode.rawValue
-        case let .endsWith(mode): return mode.rawValue
-        case let .contains(mode): return mode.rawValue
-        }
+        return rawValue
     }
 
     /// <# Description #>
     public func prepare(value: String) -> String {
-        switch self {
-        case .startsWith: return value + "*"
-        case .endsWith: return "*" + value
-        case .contains: return "*" + value + "*"
-        }
+        return value // Nothing to compare on single value operations
     }
 }
 
