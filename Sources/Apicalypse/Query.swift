@@ -53,12 +53,12 @@ extension Query {
 
     /// Example: `.include(field: \.platform)`
     public func include(field: PartialKeyPath<Entity>) throws -> Query {
-        return try include(field: field as AnyKeyPath)
+        return try include(subField: field) // Does forward, but actually calls `Self.Entity`
     }
 
-    /// Example: `.include(field: \Logo.imageId)`
-    public func include(field: AnyKeyPath) throws -> Query {
-        return try include(field: rawCodingPath(for: Entity.codingPath(for: field)))
+    /// Example: `.include(subField: \Logo.imageId)`
+    public func include<SubEntity>(subField: PartialKeyPath<SubEntity>) throws -> Query where SubEntity: Composable {
+        return try include(field: rawCodingPath(for: Entity.codingPath(for: subField)))
     }
 
     /// Example: `.include(field: "platform")`
@@ -70,12 +70,12 @@ extension Query {
 
     /// Example: `.include(field: [\.name, \.platform])`
     public func include(fields: [PartialKeyPath<Entity>]) throws -> Query {
-        return try include(fields: fields as [AnyKeyPath])
+        return try include(subFields: fields) // Does forward, but actually calls `Self.Entity`
     }
 
-    /// Example: `.include(fields: [\Cover.imageId, \Artwork.width, \Artwork.imageId])`
-    public func include(fields: [AnyKeyPath]) throws -> Query {
-        return try include(fields: fields.map(Entity.codingPath(for:)).map(rawCodingPath))
+    /// Example: `.include(fields: [\Artwork.width, \Artwork.imageId])`
+    public func include<SubEntity>(subFields: [PartialKeyPath<SubEntity>]) throws -> Query where SubEntity: Composable {
+        return try include(fields: subFields.map(Entity.codingPath(for:)).map(rawCodingPath))
     }
 
     /// Example: `.include(fields: ["name", "platform"])`
@@ -89,12 +89,12 @@ extension Query {
 
     /// Example: `.exclude(field: \.platform)`
     public func exclude(field: PartialKeyPath<Entity>) throws -> Query {
-        return try exclude(field: field as AnyKeyPath)
+        return try exclude(subField: field) // Does forward, but actually calls `Self.Entity`
     }
 
-    /// Example: `.exclude(field: \Cover.imageId)`
-    public func exclude(field: AnyKeyPath) throws -> Query {
-        return try exclude(field: rawCodingPath(for: Entity.codingPath(for: field)))
+    /// Example: `.exclude(subField: \Cover.imageId)`
+    public func exclude<SubEntity>(subField: PartialKeyPath<SubEntity>) throws -> Query where SubEntity: Composable {
+        return try exclude(field: rawCodingPath(for: Entity.codingPath(for: subField)))
     }
 
     /// Example: `.exclude(field: "platform")`
@@ -106,12 +106,12 @@ extension Query {
 
     /// Example: `.exclude(fields: [\.name, \.platform])`
     public func exclude(fields: [PartialKeyPath<Entity>]) throws -> Query {
-        return try exclude(fields: fields as [AnyKeyPath])
+        return try exclude(subFields: fields) // Does forward, but actually calls `Self.Entity`
     }
 
-    /// Example: `.exclude(fields: [\Cover.imageId, \Artwork.width, \Artwork.imageId])`
-    public func exclude(fields: [AnyKeyPath]) throws -> Query {
-        return try exclude(fields: fields.map(Entity.codingPath(for:)).map(rawCodingPath))
+    /// Example: `.exclude(subFields: [\Artwork.width, \Artwork.imageId])`
+    public func exclude<SubEntity>(subFields: [PartialKeyPath<SubEntity>]) throws -> Query where SubEntity: Composable {
+        return try exclude(fields: subFields.map(Entity.codingPath(for:)).map(rawCodingPath))
     }
 
     /// Example: `.exclude(fields: ["name", "platform"])`
@@ -168,6 +168,8 @@ extension Query {
         query.offset = value
         return query
     }
+
+    // MARK: Helper
 
     /// Returns the raw coding path to given `codingPath`. For example: "game", "game.title", ...
     ///
