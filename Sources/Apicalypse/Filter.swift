@@ -2,7 +2,8 @@ import Foundation
 
 /// [Filters](https://apicalypse.io/syntax/#where)
 ///
-/// Filters are used to sift through results to get what you want. You can exclude and include results based on their properties.
+/// Filters are used to sift through results to get what you want. 
+/// You can exclude and include results based on their properties.
 /// For example you could remove all Games where the `rating` was below 80
 ///
 ///     (`Filter<Game>(field: \.rating, comparison: .greaterThan, value: 80)`).
@@ -121,32 +122,44 @@ infix operator ~^*: MultiplicationPrecedence /// ~ string*
 infix operator ~*&: MultiplicationPrecedence /// ~ *string
 infix operator ~^*&: MultiplicationPrecedence /// ~ *string*
 
-/// = "Your input string"* Prefix: Exact match on the beginning of the string, can end with anything. (Case sensitive).
+/// = "Your input string"*
+///
+///Prefix: Exact match on the beginning of the string, can end with anything. (Case sensitive).
 public func =^*<Entity>(lhs: KeyPath<Entity, String>, rhs: String) throws -> Filter<Entity> where Entity: Composable {
     return try Filter(field: lhs, comparison: StringOperator.startsWith(.caseSensitive), value: rhs)
 }
 
-/// = *"Your input string" Postfix: Exact match at the end of the string, can start with anything. (Case sensitive).
+/// = *"Your input string"
+///
+/// Postfix: Exact match at the end of the string, can start with anything. (Case sensitive).
 public func =*&<Entity>(lhs: KeyPath<Entity, String>, rhs: String) throws -> Filter<Entity> where Entity: Composable {
     return try Filter(field: lhs, comparison: StringOperator.endsWith(.caseSensitive), value: rhs)
 }
 
-/// = *"Your input string"* Infix Exact match in the middle of the string, can start and end with anything. (Case sensitive).
+/// = *"Your input string"*
+///
+/// Infix: Exact match in the middle of the string, can start and end with anything. (Case sensitive).
 public func =^*&<Entity>(lhs: KeyPath<Entity, String>, rhs: String) throws -> Filter<Entity> where Entity: Composable {
     return try Filter(field: lhs, comparison: StringOperator.contains(.caseSensitive), value: rhs)
 }
 
-/// ~ "Your input string"* Prefix: Exact match on the beginning of the string, can end with anything. (Case insensitive).
+/// ~ "Your input string"*
+///
+/// Prefix: Exact match on the beginning of the string, can end with anything. (Case insensitive).
 public func ~^*<Entity>(lhs: KeyPath<Entity, String>, rhs: String) throws -> Filter<Entity> where Entity: Composable {
     return try Filter(field: lhs, comparison: StringOperator.startsWith(.caseInsensitive), value: rhs)
 }
 
-/// ~ *"Your input string" Postfix: Exact match at the end of the string, can start with anything. (Case insensitive).
+/// ~ *"Your input string"
+///
+/// Postfix: Exact match at the end of the string, can start with anything. (Case insensitive).
 public func ~*&<Entity>(lhs: KeyPath<Entity, String>, rhs: String) throws -> Filter<Entity> where Entity: Composable {
     return try Filter(field: lhs, comparison: StringOperator.endsWith(.caseInsensitive), value: rhs)
 }
 
-/// ~ *"Your input string"* Infix Exact match in the middle of the string, can start and end with anything. (Case insensitive).
+/// ~ *"Your input string"*
+///
+/// Infix Exact match in the middle of the string, can start and end with anything. (Case insensitive).
 public func ~^*&<Entity>(lhs: KeyPath<Entity, String>, rhs: String) throws -> Filter<Entity> where Entity: Composable {
     return try Filter(field: lhs, comparison: StringOperator.contains(.caseInsensitive), value: rhs)
 }
