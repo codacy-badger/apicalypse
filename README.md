@@ -7,7 +7,7 @@
 </h1>
 
 <h4 align="center">
-    A simple module for creating Apicalypse queries in pure Swift.
+    A simple Swift module for creating Apicalypse queries.
 </h4>
 
 <p align="center">
@@ -63,9 +63,9 @@ Now you can write type-safe Queries on User using KeyPaths:
 
 ```swift
 let query = try Query(entity: User.self)
-    .include(contentsOf: .allFields) // Include all fields of the user, i.e. `identifier`, `name` and `age`
-    .where(\User.age > 20) // Ignore users that are 20 years old or younger
-    .exclude(\.age) // However, exclude age on all users in the response
+    .include(contentsOf: .allFields) // Include all fields of the user, i.e. `id`, `name` and `age`
+    .where(\User.age > 20) // Ignore users that are of age 20 or younger
+    .exclude(\.age) // Also, exclude age on all users in the response
     .sort(by: \.name, order: .ascending) // Sorted by their name
 ```
 
