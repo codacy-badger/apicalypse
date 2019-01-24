@@ -146,7 +146,7 @@ it's as simple as adding a `dependencies` clause to your `Package.swift`:
 
 ``` swift
 dependencies: [
-    .package(url: "https://github.com/markuswntr/apicalypse.git", from: "1.0.0")
+    .package(url: "https://github.com/markuswntr/apicalypse.git", from: Version(1, 0, 0))
 ]
 ```
 

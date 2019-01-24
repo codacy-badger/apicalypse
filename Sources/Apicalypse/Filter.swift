@@ -61,6 +61,14 @@ public struct Filter: CustomStringConvertible {
     ///   - operator: The operator to test `property` against value, e.g. "=", "!=", ">", ...
     ///   - value: The value to match against `property`
     fileprivate init(property: String, operator: Operator, value: String?) {
+        var value = value == "nil" ? "null" : value // Sanitize nil/null value
+        // Sanitize optional representations
+        if let range = value?.range(of: "Optional(", options: .anchored) {
+            value = value?.replacingCharacters(in: range, with: "")
+            value = value?.range(of: ")", options: [.backwards, .anchored]).flatMap { range in
+                value?.replacingCharacters(in: range, with: "")
+            }
+        }
         self.property = property
         self.operator = `operator`
         self.value = value ?? "null"
