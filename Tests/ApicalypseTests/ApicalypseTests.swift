@@ -11,25 +11,29 @@ protocol Identifiable {
 // MARK: One to One.Identifier
 
 func == <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value.Identifier)
-    throws -> Filter where Entity: Composable, Value: Identifiable  {
-        return try Filter(property: Entity.codingPath(for: lhs), operator: EquatableOperator.equal, value: String(describing: rhs))
+    throws -> Filter where Entity: Composable, Value: Identifiable {
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: EquatableOperator.equal, value: String(describing: rhs))
 }
 
 func != <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value.Identifier)
-    throws -> Filter where Entity: Composable, Value: Identifiable  {
-        return try Filter(property: Entity.codingPath(for: lhs), operator: EquatableOperator.notEqual, value: String(describing: rhs))
+    throws -> Filter where Entity: Composable, Value: Identifiable {
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: EquatableOperator.notEqual, value: String(describing: rhs))
 }
 
 // MARK: One to Many.Identifier
 
 func == <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: [Value.Identifier])
-    throws -> Filter where Entity: Composable, Value: Identifiable  {
-        return try Filter(property: Entity.codingPath(for: lhs), operator: EquatableOperator.equal, value: String(describing: rhs))
+    throws -> Filter where Entity: Composable, Value: Identifiable {
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: EquatableOperator.equal, value: String(describing: rhs))
 }
 
 func != <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: [Value.Identifier])
-    throws -> Filter where Entity: Composable, Value: Identifiable  {
-        return try Filter(property: Entity.codingPath(for: lhs), operator: EquatableOperator.notEqual, value: String(describing: rhs))
+    throws -> Filter where Entity: Composable, Value: Identifiable {
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: EquatableOperator.notEqual, value: String(describing: rhs))
 }
 
 // MARK: Many to Many.Identifier
@@ -37,25 +41,29 @@ func != <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: [Value.Identifier])
 func == <Entity, Value>(lhs: KeyPath<Entity, [Value]>, rhs: [Value.Identifier])
     throws -> Filter where Entity: Composable, Value: Identifiable {
         let value = rhs.map(String.init(describing:)).joined(separator: ",")
-        return try Filter(property: Entity.codingPath(for: lhs), operator: CollectionOperator.containsAll, value: value)
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: CollectionOperator.containsAll, value: value)
 }
 
 func === <Entity, Value>(lhs: KeyPath<Entity, [Value]>, rhs: [Value.Identifier])
     throws -> Filter where Entity: Composable, Value: Identifiable {
         let value = rhs.map(String.init(describing:)).joined(separator: ",")
-        return try Filter(property: Entity.codingPath(for: lhs), operator: CollectionOperator.containsExclusively, value: value)
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: CollectionOperator.containsExclusively, value: value)
 }
 
 func ~= <Entity, Value>(lhs: KeyPath<Entity, [Value]>, rhs: [Value.Identifier])
     throws -> Filter where Entity: Composable, Value: Identifiable {
         let value = rhs.map(String.init(describing:)).joined(separator: ",")
-        return try Filter(property: Entity.codingPath(for: lhs), operator: CollectionOperator.containsAtLeastOne, value: value)
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: CollectionOperator.containsAtLeastOne, value: value)
 }
 
 func != <Entity, Value>(lhs: KeyPath<Entity, [Value]>, rhs: [Value.Identifier])
     throws -> Filter where Entity: Composable, Value: Identifiable {
         let value = rhs.map(String.init(describing:)).joined(separator: ",")
-        return try Filter(property: Entity.codingPath(for: lhs), operator: CollectionOperator.containsNone, value: value)
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: CollectionOperator.containsNone, value: value)
 }
 
 // MARK: Many? to Many.Identifier
@@ -63,25 +71,29 @@ func != <Entity, Value>(lhs: KeyPath<Entity, [Value]>, rhs: [Value.Identifier])
 func == <Entity, Value>(lhs: KeyPath<Entity, [Value]?>, rhs: [Value.Identifier])
     throws -> Filter where Entity: Composable, Value: Identifiable {
         let value = rhs.map(String.init(describing:)).joined(separator: ",")
-        return try Filter(property: Entity.codingPath(for: lhs), operator: CollectionOperator.containsAll, value: value)
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: CollectionOperator.containsAll, value: value)
 }
 
 func === <Entity, Value>(lhs: KeyPath<Entity, [Value]?>, rhs: [Value.Identifier])
     throws -> Filter where Entity: Composable, Value: Identifiable {
         let value = rhs.map(String.init(describing:)).joined(separator: ",")
-        return try Filter(property: Entity.codingPath(for: lhs), operator: CollectionOperator.containsExclusively, value: value)
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: CollectionOperator.containsExclusively, value: value)
 }
 
 func ~= <Entity, Value>(lhs: KeyPath<Entity, [Value]?>, rhs: [Value.Identifier])
     throws -> Filter where Entity: Composable, Value: Identifiable {
         let value = rhs.map(String.init(describing:)).joined(separator: ",")
-        return try Filter(property: Entity.codingPath(for: lhs), operator: CollectionOperator.containsAtLeastOne, value: value)
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: CollectionOperator.containsAtLeastOne, value: value)
 }
 
 func != <Entity, Value>(lhs: KeyPath<Entity, [Value]?>, rhs: [Value.Identifier])
     throws -> Filter where Entity: Composable, Value: Identifiable {
         let value = rhs.map(String.init(describing:)).joined(separator: ",")
-        return try Filter(property: Entity.codingPath(for: lhs), operator: CollectionOperator.containsNone, value: value)
+        return try Filter(property: Entity.codingPath(for: lhs),
+            operator: CollectionOperator.containsNone, value: value)
 }
 
 enum Category: Int, CustomStringConvertible {
@@ -108,7 +120,7 @@ struct Screenshot: Composable, Identifiable {
         switch keyPath {
         case \Screenshot.identifier: return CodingKeys.identifier
         case \Screenshot.imageUrl: return CodingKeys.imageUrl
-        default: XCTFail(); fatalError()
+        default: XCTFail("invalid keypath"); fatalError()
         }
     }
 }
@@ -132,7 +144,7 @@ struct Platform: Composable, Identifiable {
         case \Platform.identifier: return CodingKeys.identifier
         case \Platform.name: return CodingKeys.name
         case \Platform.summary: return CodingKeys.summary
-        default: XCTFail(); fatalError()
+        default: XCTFail("invalid keypath"); fatalError()
         }
     }
 }
@@ -167,7 +179,7 @@ struct Game: Composable, Identifiable {
         case \Game.platforms: return CodingKeys.platforms
         case \Game.screenshots: return CodingKeys.screenshots
         case \Game.releaseDate: return CodingKeys.releaseDate
-        default: XCTFail(); fatalError()
+        default: XCTFail("invalid keypath"); fatalError()
         }
     }
 }
@@ -232,6 +244,6 @@ final class ApicalypseTests: XCTestCase {
         ("testCustomStringConvertibleEnumInclude", testCustomStringConvertibleEnumInclude),
         ("testCustomStringConvertibleEnumFilter", testCustomStringConvertibleEnumFilter),
         ("testJoinedAndFilter", testJoinedAndFilter),
-        ("testJoinedOrFilter", testJoinedOrFilter),
+        ("testJoinedOrFilter", testJoinedOrFilter)
     ]
 }

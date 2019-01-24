@@ -31,7 +31,7 @@ public enum EquatableOperator: String, Operator {
 /// <# Description #>
 public enum JoiningOperator: String, Operator {
     case and = "&"
-    case or = "|"
+    case or = "|" // swiftlint:disable:this identifier_name
 
     /// The operator sign of this comparison
     public var operation: String {
