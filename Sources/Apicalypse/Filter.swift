@@ -193,10 +193,13 @@ public func != <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value)
 
 prefix operator * /// *string
 postfix operator * /// string*
-// A combination of both, prefix and postfix operator, result in *string*
+// ... combination of both, prefix and postfix operator, result in *string*
 
-prefix func * (_ value: String) -> String { return "*" + value }
-postfix func * (_ value: String) -> String { return value + "*" }
+/// Prefixes given string with *
+public prefix func * (_ value: String) -> String { return "*" + value }
+
+/// Suffixes given string with *
+public postfix func * (_ value: String) -> String { return value + "*" }
 
 /// = "Your input string" - Case sensitive match
 public func == <Entity>(lhs: KeyPath<Entity, String>, rhs: String) throws -> Filter where Entity: Composable {
