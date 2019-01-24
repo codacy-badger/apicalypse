@@ -27,6 +27,7 @@
         <img src="https://img.shields.io/badge/contact-@markuswntr-5AA9E7.svg" alt="Twitter: @markuswntr" />
     </a>
 </p>
+<br>
 <!-- markdownlint-enable MD033 -->
 
 ## Basic example
