@@ -7,7 +7,7 @@
 </h1>
 
 <h4 align="center">
-    A simple client for creating Apicalypse queries in pure Swift.
+    A simple module for creating Apicalypse queries in pure Swift.
 </h4>
 
 <p align="center">
