@@ -1,30 +1,33 @@
-<!-- markdownlint-disable MD033 -->
-<p align="center">
+<!-- markdownlint-disable MD002 MD033 MD041 -->
+<h1 align="center">
+  <a href="https://github.com/markuswntr/apicalypse">
     <img src="https://apicalypse.io/images/logo.png" width="300" max-width="50%" alt="Apicalypse" />
-</p>
+  </a>
+  <br>Apicalypse <br>
+</h1>
+
+<h4 align="center">
+    A simple client for creating Apicalypse queries in pure Swift.
+</h4>
 
 <p align="center">
+    <a href="https://github.com/markuswntr/apicalypse/releases">
+        <img src="https://img.shields.io/github/release/markuswntr/apicalypse.svg" alt="Release Version" />
+    </a>
     <a href="https://travis-ci.com/markuswntr/apicalypse">
         <img src="https://travis-ci.com/markuswntr/apicalypse.svg?branch=master" alt="Build Status" />
     </a>
     <a href="https://www.codacy.com/app/markuswntr/apicalypse">
         <img src="https://api.codacy.com/project/badge/Grade/46ed2cb5ee3a43ba9450b56b209f5e25" alt="Codacy" />
     </a>
-    <a href="https://github.com/markuswntr/apicalypse/releases">
-        <img src="https://img.shields.io/github/release/markuswntr/apicalypse.svg" alt="Release Version" />
-    </a>
     <a href="https://swift.org">
         <img src="https://img.shields.io/badge/Swift-4.2-red.svg" alt="Swift Version" />
     </a>
     <a href="https://twitter.com/markuswntr">
-        <img src="https://img.shields.io/badge/contact-@markuswntr-blue.svg" alt="Twitter: @markuswntr" />
+        <img src="https://img.shields.io/badge/contact-@markuswntr-5AA9E7.svg" alt="Twitter: @markuswntr" />
     </a>
 </p>
 <!-- markdownlint-enable MD033 -->
-
-#
-
-A simple client for creating Apicalypse queries in pure Swift.
 
 ## Basic example
 
@@ -135,12 +138,15 @@ let query = try Query(entity: Game.self)
 
 ## Installation
 
-**Swift Package Manager:**
+### Swift Package Manager
 
-Add Apicalypse as dependency to your `Package.swift`
+If you want to use Apicalypse in a project that uses [SPM](https://swift.org/package-manager/),
+it's as simple as adding a `dependencies` clause to your `Package.swift`:
 
-```swift
-.package(url: "https://github.com/markuswntr/apicalypse.git", from: "1.0.0")
+``` swift
+dependencies: [
+    .package(url: "https://github.com/markuswntr/apicalypse.git", from: "1.0.0")
+]
 ```
 
 > Then `import Apicalypse` wherever necessary.
@@ -148,7 +154,7 @@ Add Apicalypse as dependency to your `Package.swift`
 ## Hope you enjoy Apicalypse
 
 For more updates on Apicalypse, and my other open source projects,
-follow me on Twitter: [@markuswntr](http://www.twitter.com/markuswntr)
+follow me on Twitter: [@markuswntr](https://www.twitter.com/markuswntr)
 
-Also make sure to check out [IGDB](http://github.com/markuswntr/igdb), that lets you interact
-with the [igdb.com](igdb.com) API, to see Apicalypse in action
+Also make sure to check out [IGDB](https://github.com/markuswntr/igdb), that lets you interact
+with the [igdb.com](https://igdb.com) API, to see Apicalypse in action
