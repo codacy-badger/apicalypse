@@ -95,6 +95,15 @@ public struct Filter: CustomStringConvertible {
     }
 
     /// <# Description #>
+    public init<Entity, Value>(field keyPath: KeyPath<Entity, Value>, operator: Operator, values: [Value])
+        throws where Entity: Composable {
+            try self.init(
+                property: Entity.codingPath(for: keyPath),
+                operator: `operator`,
+                value: "(" + values.map(String.init(describing:)).joined(separator: ",") + ")")
+    }
+
+    /// <# Description #>
     public init<Entity, Value>(field keyPath: KeyPath<Entity, Value>, operator: Operator, values: Value)
         throws where Entity: Composable, Value: Collection {
             try self.init(
@@ -135,6 +144,16 @@ public func == <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value) throws -
 /// != Not Equal: Exact match equal. Examples: `try \.identifier != 4`, `try \.parentGame != nil`
 public func != <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: Value) throws -> Filter where Entity: Composable {
     return try Filter(field: lhs, operator: EquatableOperator.notEqual, value: rhs)
+}
+
+/// = Equals any. Examples: `try \.identifier == [4, 3, 16]`
+public func == <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: [Value]) throws -> Filter where Entity: Composable {
+    return try Filter(field: lhs, operator: EquatableOperator.equal, values: rhs)
+}
+
+/// != Not equal to any. Examples: `try \.identifier != [4, 3, 16]`
+public func != <Entity, Value>(lhs: KeyPath<Entity, Value>, rhs: [Value]) throws -> Filter where Entity: Composable {
+    return try Filter(field: lhs, operator: EquatableOperator.notEqual, values: rhs)
 }
 
 // MARK: - Numeric Filter
